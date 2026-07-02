@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Patients from "./pages/Patients";
 import NewPatient from "./pages/NewPatient";
 import PatientProfile from "./pages/PatientProfile";
+import ADIMENotes from "./pages/ADIMENotes";
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
             <Route path="patients" element={<Patients />} />
             <Route path="patients/:id" element={<PatientProfile />} />
             <Route path="new-patient" element={<NewPatient />} />
+            <Route path="adime" element={<ADIMENotes />} />
           </Route>
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

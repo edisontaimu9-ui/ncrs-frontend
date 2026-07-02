@@ -5,6 +5,7 @@ import Layout from "./components/Layout";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Patients from "./pages/Patients";
+import NewPatient from "./pages/NewPatient";
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="patients" element={<Patients />} />
+            <Route path="new-patient" element={<NewPatient />} />
           </Route>
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

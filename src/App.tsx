@@ -4,6 +4,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import Patients from "./pages/Patients";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
           >
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="patients" element={<Patients />} />
           </Route>
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

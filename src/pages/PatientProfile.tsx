@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { exportPatientPDF } from "../utils/exportPDF";
 
 interface Patient {
   id: string;
@@ -18,8 +19,7 @@ interface Patient {
 
 function calcAge(dob: string) {
   if (!dob) return "—";
-  const diff = Date.now() - new Date(dob).getTime();
-  return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25)) + " yrs";
+  return Math.floor((Date.now() - new Date(dob).getTime()) / (1000 * 60 * 60 * 24 * 365.25)) + " yrs";
 }
 
 function fmt(date: string) {
@@ -63,9 +63,7 @@ export default function PatientProfile() {
         <div className="flex-1">
           <div className="flex items-center gap-3">
             <h1 className="text-xl font-bold text-slate-800">{patient.full_name}</h1>
-            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${patient.status === "Active" ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>
-              {patient.status}
-            </span>
+            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${patient.status === "Active" ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>{patient.status}</span>
           </div>
           <p className="text-slate-500 text-sm mt-0.5">Registered {fmt(patient.created_at)}</p>
         </div>
@@ -73,9 +71,7 @@ export default function PatientProfile() {
 
       <div className="space-y-5">
         <section className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-          <div className="px-4 py-3 border-b border-slate-100">
-            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Personal Information</h2>
-          </div>
+          <div className="px-4 py-3 border-b border-slate-100"><h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Personal Information</h2></div>
           <div className="divide-y divide-slate-50">
             <Row label="Full name" value={patient.full_name} />
             <Row label="Date of birth" value={fmt(patient.date_of_birth)} />
@@ -86,9 +82,7 @@ export default function PatientProfile() {
         </section>
 
         <section className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-          <div className="px-4 py-3 border-b border-slate-100">
-            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Admission Details</h2>
-          </div>
+          <div className="px-4 py-3 border-b border-slate-100"><h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Admission Details</h2></div>
           <div className="divide-y divide-slate-50">
             <Row label="Facility" value={patient.facility} />
             <Row label="Ward" value={patient.ward} />
@@ -98,46 +92,20 @@ export default function PatientProfile() {
         </section>
 
         <section className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-          <div className="px-4 py-3 border-b border-slate-100">
-            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Nutrition Information</h2>
-          </div>
+          <div className="px-4 py-3 border-b border-slate-100"><h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Nutrition Information</h2></div>
           <div className="px-4 py-3">
-            <p className="text-sm text-slate-700 leading-relaxed">
-              {patient.nutrition_diagnosis || <span className="text-slate-400">No diagnosis recorded.</span>}
-            </p>
+            <p className="text-sm text-slate-700 leading-relaxed">{patient.nutrition_diagnosis || <span className="text-slate-400">No diagnosis recorded.</span>}</p>
           </div>
         </section>
 
         <section className="space-y-3">
-          <button
-            onClick={() => navigate(`/adime?patient_id=${id}&name=${encodeURIComponent(patient.full_name)}`)}
-            className="w-full bg-[#0F4C3A] hover:bg-[#0a3629] text-white font-semibold py-3 rounded-xl text-sm transition-colors"
-          >
-            + New ADIME Note
-          </button>
-
-          <button
-            onClick={() => navigate(`/patients/${id}/edit`)}
-            className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-3 rounded-xl text-sm transition-colors"
-          >
-            Edit Patient
-          </button>
-
+          <button onClick={() => navigate(`/adime?patient_id=${id}&name=${encodeURIComponent(patient.full_name)}`)} className="w-full bg-[#0F4C3A] hover:bg-[#0a3629] text-white font-semibold py-3 rounded-xl text-sm transition-colors">+ New ADIME Note</button>
+          <button onClick={() => navigate(`/patients/${id}/edit`)} className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-3 rounded-xl text-sm transition-colors">Edit Patient</button>
+          <button onClick={() => exportPatientPDF(patient)} className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-3 rounded-xl text-sm transition-colors">Export as PDF</button>
           {patient.status === "Active" && (
-            <button
-              onClick={handleDischarge}
-              className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-3 rounded-xl text-sm transition-colors"
-            >
-              Mark as Discharged
-            </button>
+            <button onClick={handleDischarge} className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-3 rounded-xl text-sm transition-colors">Mark as Discharged</button>
           )}
-
-          <button
-            onClick={() => setShowConfirm(true)}
-            className="w-full bg-white border border-red-200 hover:bg-red-50 text-red-500 font-semibold py-3 rounded-xl text-sm transition-colors"
-          >
-            Delete Patient
-          </button>
+          <button onClick={() => setShowConfirm(true)} className="w-full bg-white border border-red-200 hover:bg-red-50 text-red-500 font-semibold py-3 rounded-xl text-sm transition-colors">Delete Patient</button>
         </section>
       </div>
 
@@ -148,9 +116,7 @@ export default function PatientProfile() {
             <p className="text-slate-500 text-sm mb-6">This will permanently remove {patient.full_name} and all their records.</p>
             <div className="flex gap-3">
               <button onClick={() => setShowConfirm(false)} className="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-medium">Cancel</button>
-              <button onClick={handleDelete} disabled={deleting} className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-semibold">
-                {deleting ? "Deleting..." : "Delete"}
-              </button>
+              <button onClick={handleDelete} disabled={deleting} className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-semibold">{deleting ? "Deleting..." : "Delete"}</button>
             </div>
           </div>
         </div>

@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Patients from "./pages/Patients";
 import NewPatient from "./pages/NewPatient";
 import PatientProfile from "./pages/PatientProfile";
+import EditPatient from "./pages/EditPatient";
 import ADIMENotes from "./pages/ADIMENotes";
 import Reports from "./pages/Reports";
 
@@ -21,6 +22,7 @@ export default function App() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="patients" element={<Patients />} />
             <Route path="patients/:id" element={<PatientProfile />} />
+            <Route path="patients/:id/edit" element={<EditPatient />} />
             <Route path="new-patient" element={<NewPatient />} />
             <Route path="adime" element={<ADIMENotes />} />
             <Route path="reports" element={<Reports />} />

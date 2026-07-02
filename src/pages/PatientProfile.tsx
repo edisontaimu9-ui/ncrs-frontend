@@ -36,15 +36,10 @@ export default function PatientProfile() {
   const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
-    supabase
-      .from("patients")
-      .select("*")
-      .eq("id", id)
-      .single()
-      .then(({ data, error }) => {
-        if (!error) setPatient(data);
-        setLoading(false);
-      });
+    supabase.from("patients").select("*").eq("id", id).single().then(({ data, error }) => {
+      if (!error) setPatient(data);
+      setLoading(false);
+    });
   }, [id]);
 
   const handleDischarge = async () => {
@@ -63,15 +58,12 @@ export default function PatientProfile() {
 
   return (
     <div className="p-6 max-w-2xl">
-      {/* Header */}
       <div className="flex items-center gap-4 mb-6">
         <button onClick={() => navigate("/patients")} className="text-slate-400 hover:text-slate-600 text-lg">←</button>
         <div className="flex-1">
           <div className="flex items-center gap-3">
             <h1 className="text-xl font-bold text-slate-800">{patient.full_name}</h1>
-            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-              patient.status === "Active" ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"
-            }`}>
+            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${patient.status === "Active" ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>
               {patient.status}
             </span>
           </div>
@@ -80,7 +72,6 @@ export default function PatientProfile() {
       </div>
 
       <div className="space-y-5">
-        {/* Personal Info */}
         <section className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
           <div className="px-4 py-3 border-b border-slate-100">
             <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Personal Information</h2>
@@ -94,7 +85,6 @@ export default function PatientProfile() {
           </div>
         </section>
 
-        {/* Admission */}
         <section className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
           <div className="px-4 py-3 border-b border-slate-100">
             <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Admission Details</h2>
@@ -107,7 +97,6 @@ export default function PatientProfile() {
           </div>
         </section>
 
-        {/* Nutrition */}
         <section className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
           <div className="px-4 py-3 border-b border-slate-100">
             <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Nutrition Information</h2>
@@ -119,13 +108,19 @@ export default function PatientProfile() {
           </div>
         </section>
 
-        {/* Actions */}
         <section className="space-y-3">
           <button
             onClick={() => navigate(`/adime?patient_id=${id}&name=${encodeURIComponent(patient.full_name)}`)}
             className="w-full bg-[#0F4C3A] hover:bg-[#0a3629] text-white font-semibold py-3 rounded-xl text-sm transition-colors"
           >
             + New ADIME Note
+          </button>
+
+          <button
+            onClick={() => navigate(`/patients/${id}/edit`)}
+            className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-3 rounded-xl text-sm transition-colors"
+          >
+            Edit Patient
           </button>
 
           {patient.status === "Active" && (
@@ -146,7 +141,6 @@ export default function PatientProfile() {
         </section>
       </div>
 
-      {/* Delete confirmation */}
       {showConfirm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-6 z-50">
           <div className="bg-white rounded-2xl p-6 w-full max-w-sm">

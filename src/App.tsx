@@ -10,6 +10,7 @@ import PatientProfile from "./pages/PatientProfile";
 import EditPatient from "./pages/EditPatient";
 import ADIMENotes from "./pages/ADIMENotes";
 import Reports from "./pages/Reports";
+import AdminPanel from "./pages/AdminPanel";
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
             <Route path="new-patient" element={<NewPatient />} />
             <Route path="adime" element={<ADIMENotes />} />
             <Route path="reports" element={<Reports />} />
+            <Route path="admin" element={<AdminPanel />} />
           </Route>
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
